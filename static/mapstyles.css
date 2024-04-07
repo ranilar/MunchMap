@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Barlow", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: wheat;
+}
+
+.menu {
+    background: lightskyblue;
+    color: whitesmoke;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.menu h1 {
+    font-size: 36px;
+    color: black;
+    padding-bottom: 20px;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+    justify-content: right;
+    align-items: end;
+}
+
+.menu ul li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: black;
+    font-size: 20px;
+}
+
+#map {
+    height: 70vh;
+    width: 100%; 
+}

@@ -1,0 +1,154 @@
+/* Font=Barlow static */
+@import url('https://    width: 60vh;fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap')
+;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Barlow", sans-serif;
+
+
+     
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: wheat;
+}
+
+.wrapper {
+    width: 600px;
+    background: lightskyblue;
+    color: whitesmoke;
+    border-radius: 15px;
+}
+
+.wrapper h1 {
+    padding-top: 35px;
+    font-size: 54px;
+    text-align: center;
+    color: black;
+
+}
+
+.wrapper h2 {
+    font-size: 36px;
+    text-align: center;
+    color: black;
+    padding-bottom: -20px;
+}
+
+.wrapper .input-box {
+    width:  80%;
+    height: 50px;
+    margin: 50px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid black;
+    border-radius: 30px;
+    font-size: 20px;
+    font-weight: 300;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: black;
+}
+
+.wrapper .btn {
+    display: block;
+    margin: auto;
+    width: 70%;
+    height: 35px;
+    background: burlywood;
+    font-size: 20px;
+    text-align: center;
+    outline: none;
+    border: none;
+    background-color: g;
+    border-radius: 40px;
+    box-shadow: 0 0 10px black;
+    cursor: pointer;
+    color: black;
+    font-weight: 600;
+}
+
+.wrapper .forgot-password {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    margin: -45px 0 25px;
+    padding-left: 65px;
+}
+
+.forgot-password a {
+    color: black;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+.wrapper .sign-up-link {
+    display: flex;
+    height: auto;
+    text-align: center;
+    font-size: 20px;
+    margin: 25px 0 20px 150px;
+    padding-left: 65px;
+    color: black;
+}
+
+.sign-up-link p a {
+    color: black;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sign-up-link a:hover {
+    text-decoration: underline;
+}
+
+.wrapper .terms {
+    color: black;
+    font-weight: 600;
+    margin: -45px 0 20px 65px;
+}
+
+.wrapper .registerbtn {
+    display: block;
+    margin: 30px 30px 50px 85px;
+    width: 70%;
+    height: 35px;
+    background: burlywood;
+    font-size: 20px;
+    text-align: center;
+    outline: none;
+    border: none;
+    background-color: g;
+    border-radius: 40px;
+    box-shadow: 0 0 10px black;
+    cursor: pointer;
+    color: black;
+    font-weight: 600;
+}
+
+
+/*map.html*/
+#map {
+    height: 70vh;
+    width: 300vh;
+    margin: 50px 75px 5px 75px;
+}
+

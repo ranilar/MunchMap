@@ -12,6 +12,7 @@ def login(username, password):
     else:
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
+            session["username"] = username
             return True
         else:
             return False
@@ -21,7 +22,7 @@ def register(email, username, password):
     hash_value = generate_password_hash(password)
     try:
         print("here")
-        sql = "INSERT INTO users (email,username,password) VALUES (:email,:username,:password)"
+        sql = text("INSERT INTO users (email,username,password) VALUES (:email,:username,:password)")
         print("here1")
         try:
             db.session.execute(sql, {"email":email, "username":username, "password":hash_value})

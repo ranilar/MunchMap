@@ -22,6 +22,7 @@ body {
 
 .wrapper {
     width: 600px;
+    height: 680px;
     background: lightskyblue;
     color: whitesmoke;
     border-radius: 15px;

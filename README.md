@@ -7,10 +7,24 @@ Features:
 - Write a review for friends to see what you thought about the place
 - Find a place to eat at that fits your stomach's needs
 - Review basic information about the restaurants
-  
-UPDATE 1.0.2:
-The application has a login page, a registering page and the front/map page.
-There aren't many features to be tested now, but you can try messing around with these pages:
-/, /map, /register
 
-In the next update I will have added databases to support the application and hopefully you can add markers and reviews on the map.
+
+CURRENT STATE OF MUNCHMAP:
+I've picked up speed on the making of this web app but it is still in pretty early stages. Now, there is login, registering and adding restaurant functionability. They are pretty buggy, but it is in early stage still.
+For now, you can test the registering, log in and how the map works. (Also, don't forget to read the terms ;)
+
+INSTALLATION:
+#clone and locate to repository
+#create a .env file in the project directory with these lines:
+- DATABASE_URL=<path-to-local-database>
+- SECRET_KEY=<secret-key>
+#Define database schema with: 
+ - psql < schema.sql
+
+#download requirements with:
+pip install -r requirements.txt
+
+#start venv and run flask:
+source venv/bin/activate
+flask run
+

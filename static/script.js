@@ -8,6 +8,7 @@ const HELSINKI_BOUNDS = {
 const mapCenter = { lat: 60.16697266828053, lng: 24.943136300431043 };
 let autocomplete;
 let isFormOpen = false;
+var restaurantLocation;
 
 async function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
@@ -24,10 +25,16 @@ async function initMap() {
         mapId: "7d132948a44ae00a"
     });
 
+    fetchMarkers();
+
     const addRestaurantDiv = document.createElement("div");
     initCenterControl(addRestaurantDiv, map);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(addRestaurantDiv);
 }
+// TODO INFOWINDOW FOR MARKERS
+const infoWindow = new google.maps.InfoWindow({
+
+})
 
 function initCenterControl(addRestaurantDiv, map) {
     const addRestaurant = createCenterControl(map);
@@ -90,7 +97,7 @@ function showReviewForm(map) {
             <label for="review">Review:</label><br>
             <textarea id="review" name="review" rows="6" cols="50"></textarea>
             <br>
-            <button type="submit">Submit</button>
+            <button type="submit" onclick="submitForm(event)">Submit</button>
             <button type="button" onclick="closeReviewForm()">Cancel</button>
         </form>
     `;
@@ -98,13 +105,19 @@ function showReviewForm(map) {
 
     document.body.appendChild(formDiv);
 
+    document.getElementById("restaurantForm").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+        }
+    });
+
     map.setOptions({ draggable: false, clickableIcons: false });
 
     const restaurantNameInput = document.getElementById("restaurantName");
     autocomplete = new google.maps.places.Autocomplete(
         restaurantNameInput,
         {
-            types: ["establishment"],
+            types: ["restaurant"],
             bounds: HELSINKI_BOUNDS,
             strictBounds: true
         });
@@ -113,7 +126,9 @@ function showReviewForm(map) {
         const place = autocomplete.getPlace();
         if (place.geometry) {
             restaurantNameInput.value = place.name;
-        }
+            restaurantLocation = place.geometry.location;
+        } 
+
     });
 }
 
@@ -123,8 +138,7 @@ function closeReviewForm() {
     if (formDiv) {
         formDiv.remove();
         map.setOptions({ draggable: true, clickableIcons: true });
-        isFormOpen = false;
-    }
+        isFormOpen = false;    }
 }
 
 function submitForm(event) {
@@ -132,10 +146,58 @@ function submitForm(event) {
     const restaurantName = document.getElementById("restaurantName").value;
     const rating = document.getElementById("rating").value;
     const review = document.getElementById("review").value;
-
-    console.log("Rating:", rating);
-    console.log("Review:", review);
-
-    closeReviewForm();
+    const data = {
+        restaurantName,
+        rating,
+        review,
+        restaurantLocation
+    };
+    fetch("/save-restaurant", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Success:", data);
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+        closeReviewForm();
+        initMap();
 }
 
+function fetchMarkers() {
+    const image = {
+        url: "https://cdn-icons-png.flaticon.com/128/4668/4668400.png",
+        scaledSize: new google.maps.Size(60, 60), // scaled size
+    }
+    fetch("/fetch-markers")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to fetch marker data");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.markers.length === 0) {
+            console.log("No markers found");
+            return;
+        }
+        data.markers.forEach(function(markerInfo) {
+            console.log(markerInfo)
+            new google.maps.Marker({
+                position: {lat:markerInfo[0], lng:markerInfo[1]},
+                map,
+                title: "Hello!",
+                icon: image,
+            })
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching marker data:", error);
+    });
+}

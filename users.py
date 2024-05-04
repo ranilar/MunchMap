@@ -21,16 +21,12 @@ def login(username, password):
 def register(email, username, password):
     hash_value = generate_password_hash(password)
     try:
-        print("here")
         sql = text("INSERT INTO users (email,username,password) VALUES (:email,:username,:password)")
-        print("here1")
         try:
             db.session.execute(sql, {"email":email, "username":username, "password":hash_value})
-            print("here2")
             db.session.commit()
-        except: print("doesnt work")   
+        except: 0   
     except:
-        print("nogood")
         return False
     return login(username, password)
 

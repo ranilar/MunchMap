@@ -48,6 +48,21 @@ def register():
         else:
             return render_template("error.html", message="Incorrect input")
         
+#Profile page
+@app.route("/profile/<int:id>")
+def profile(id):
+    allow = False
+    if users.user_id() == id:
+        allow = True
+    elif users.user_id():
+        sql = text("SELECT 1 FROM friends WHERE user_1=:user1 AND user_2=:user2")
+        result = db.session.execute(sql, {"user1":users.user_id(), "user2":id})
+        if result.fetchone():
+            allow = True
+    if not allow:
+        return render_template("error.html", error="Not validated to see page")
+    return render_template("profile.html")
+
 #Save restaurant and review data to database
 @app.route("/save-restaurant", methods=["POST"])
 def save_restaurant():
@@ -74,17 +89,33 @@ def save_restaurant():
 
     return jsonify({"message": "Restaurant data saved successfully"})
 
-
-#Fetch markers to script.js to display on the map
+#Fetch marker data to front
 @app.route("/fetch-markers", methods=["GET"])
 def fetch_markers():
-    user_id = users.user_id()  
-    sql = text("SELECT lat, lng FROM markers WHERE user_id=:user_id;")
-    result = db.session.execute(sql, {"user_id": user_id})
-    markers = result.fetchall()
-    
-    if not markers:
+    user_id = users.user_id()
+    sql_markers = text("SELECT m.lat, m.lng, m.id, m.restaurantName, r.review, r.rating FROM markers m LEFT JOIN reviews r ON r.marker_id = m.id WHERE m.user_id=:user_id;")
+    markers_result = db.session.execute(sql_markers, {"user_id": user_id})
+    markers_and_reviews = markers_result.fetchall()
+    if not markers_and_reviews:
         return jsonify({"message": "Couldn't find marker data"})
+
+    combined_data = [{
+        "lat": float(marker[0]),
+        "lng": float(marker[1]),
+        "id": marker[2],
+        "restaurantName": marker[3],
+        "review": marker[4],
+        "rating": marker[5]
+    } for marker in markers_and_reviews]
+    return jsonify({"markersAndReviews": combined_data})
+
+@app.route("/delete-marker", methods=["POST"])
+def delete_marker():
+    try:
+        data = request.json
+        sql = text("DELETE FROM markers WHERE id=:markerid")
+        db.session.execute(sql,{"markerid": data})
+        db.session.commit()
+        return jsonify({"message": "marker deleted"})
+    except: return  jsonify({"message": "couldn't delete marker"})
     
-    marker_list = [(float(marker.lat),float(marker.lng)) for marker in markers]
-    return jsonify({"markers": marker_list})

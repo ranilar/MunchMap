@@ -31,10 +31,6 @@ async function initMap() {
     initCenterControl(addRestaurantDiv, map);
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(addRestaurantDiv);
 }
-// TODO INFOWINDOW FOR MARKERS
-const infoWindow = new google.maps.InfoWindow({
-
-})
 
 function initCenterControl(addRestaurantDiv, map) {
     const addRestaurant = createCenterControl(map);
@@ -171,6 +167,7 @@ function submitForm(event) {
 }
 
 function fetchMarkers() {
+    let currentInfoWindow = null;
     const image = {
         url: "https://cdn-icons-png.flaticon.com/128/4668/4668400.png",
         scaledSize: new google.maps.Size(60, 60), // scaled size
@@ -183,21 +180,63 @@ function fetchMarkers() {
         return response.json();
     })
     .then(data => {
-        if (data.markers.length === 0) {
+        console.log(data)
+        if (data.markersAndReviews.length === 0) {
             console.log("No markers found");
             return;
         }
-        data.markers.forEach(function(markerInfo) {
-            console.log(markerInfo)
-            new google.maps.Marker({
-                position: {lat:markerInfo[0], lng:markerInfo[1]},
+        data.markersAndReviews.forEach(function(markerInfo) {
+            const marker = new google.maps.Marker({
+                position: {lat: markerInfo.lat, lng: markerInfo.lng},
                 map,
                 title: "Hello!",
                 icon: image,
-            })
+                id: markerInfo.id
+            });
+
+            marker.addListener("click", function() {
+                if (currentInfoWindow) {
+                    currentInfoWindow.close();
+                }
+                const content = `
+                    <div>
+                        <h1>${markerInfo.restaurantName}</h1>
+                        <h3>Review</h3>
+                        <p>${markerInfo.review}</p>
+                        <h3>Rating</h3>
+                        <p>${markerInfo.rating}</p>
+                        <br>
+                        <button class="removeMarkerBtn">Remove Marker</button>
+                    </div>
+                `;
+                const infoWindow = new google.maps.InfoWindow({
+                    content: content,
+                });
+                infoWindow.open(map, marker);
+                currentInfoWindow = infoWindow;
+
+                // Attach event listener for the "Remove Marker" button
+                infoWindow.addListener('domready', () => {
+                    document.querySelector('.removeMarkerBtn').addEventListener('click', function() {
+                        fetch("/delete-marker", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(markerInfo.id),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Success:", data);
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                        });
+                        currentInfoWindow.close();
+                        initMap();
+                    });
+                });
+            });
         });
-    })
-    .catch(error => {
-        console.error("Error fetching marker data:", error);
     });
 }

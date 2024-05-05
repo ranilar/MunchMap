@@ -1,30 +1,38 @@
 # MunchMap
-Don't remember exactly the restaraunts you've been to? Or perhaps intrested in what places your friends have eaten at?  
-That's where MunchMap comes in! It's almost like a social media but with food!
 
-Features:
-- Mark and see restaurants on the map, where you or your friends have been to.
-- Write a review for friends to see what you thought about the place
-- Find a place to eat at that fits your stomach's needs
-- Review basic information about the restaurants
+Tired of forgetting the great restaurants you've visited? Interested in exploring where your friends have dined? That's where MunchMap comes in! It's like social media, but with a focus on food!
+
+## Features
+
+- Mark and view restaurants on the map, both your own and those visited by your friends.
+- Share reviews with your friends to let them know what you thought about a particular place.
+- Discover dining options that match your cravings.
+
+## CURRENT STATE OF MUNCHMAP (class final version)
+Currently, MunchMap  has:
+- restaurant marking, reviewing and rating
+- befriending functionality
+
+And doesn't have:
+- a working profile
+- a bug free version
 
 
-CURRENT STATE OF MUNCHMAP:
-I've picked up speed on the making of this web app but it is still in pretty early stages. Now, there is login, registering and adding restaurant functionability. They are pretty buggy, but it is in early stage still.
-For now, you can test the registering, log in and how the map works. (Also, don't forget to read the terms ;)
+So, the current version is still buggy and is missing features, but still has the most important ones.
+Feel fre to test the features out!
 
-INSTALLATION:
-#clone and locate to repository
-#create a .env file in the project directory with these lines:
-- DATABASE_URL=<path-to-local-database>
-- SECRET_KEY=<secret-key>
-#Define database schema with: 
- - psql < schema.sql
+## Installation
 
-#download requirements with:
-pip install -r requirements.txt
+1. Clone the repository and navigate to its directory.
+2. Create a ".env" file in the project directory with the following lines:
 
-#start venv and run flask:
-source venv/bin/activate
-flask run
-
+    "DATABASE_URL= "path-to-local-database-here"
+    
+    SECRET_KEY= "secret-key"
+3. Define the database using:
+    "psql < schema.sql"
+4. Install the required dependencies with:
+    "pip install -r requirements.txt"
+5. Activate the virtual environment and run Flask:
+    source venv/bin/activate
+    flask run

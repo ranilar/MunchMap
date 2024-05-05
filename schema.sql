@@ -23,3 +23,9 @@ CREATE TABLE friends (
     user_1 INT REFERENCES users(id) ON DELETE CASCADE,
     user_2 INT REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE TABLE friendRequest (
+    id SERIAL PRIMARY KEY,
+    sender_id INT REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INT REFERENCES users(id) ON DELETE CASCADE,
+    status text
+);

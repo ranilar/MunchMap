@@ -170,7 +170,7 @@ function fetchMarkers() {
     let currentInfoWindow = null;
     const image = {
         url: "https://cdn-icons-png.flaticon.com/128/4668/4668400.png",
-        scaledSize: new google.maps.Size(60, 60), // scaled size
+        scaledSize: new google.maps.Size(60, 60), 
     }
     fetch("/fetch-markers")
     .then(response => {
@@ -181,7 +181,7 @@ function fetchMarkers() {
     })
     .then(data => {
         console.log(data)
-        if (data.markersAndReviews.length === 0) {
+        if (!data.markersAndReviews) {
             console.log("No markers found");
             return;
         }
@@ -189,7 +189,7 @@ function fetchMarkers() {
             const marker = new google.maps.Marker({
                 position: {lat: markerInfo.lat, lng: markerInfo.lng},
                 map,
-                title: "Hello!",
+                title: "",
                 icon: image,
                 id: markerInfo.id
             });
@@ -215,9 +215,8 @@ function fetchMarkers() {
                 infoWindow.open(map, marker);
                 currentInfoWindow = infoWindow;
 
-                // Attach event listener for the "Remove Marker" button
-                infoWindow.addListener('domready', () => {
-                    document.querySelector('.removeMarkerBtn').addEventListener('click', function() {
+                infoWindow.addListener("domready", () => {
+                    document.querySelector(".removeMarkerBtn").addEventListener("click", function() {
                         fetch("/delete-marker", {
                             method: "POST",
                             headers: {
@@ -238,5 +237,158 @@ function fetchMarkers() {
                 });
             });
         });
+    });
+}
+
+function toggleSidebar() {
+    var sidebar = document.getElementById("sidebar");
+    sidebar.classList.toggle("open");
+}
+
+function addFriend() {
+
+    var friendUsername = document.getElementById("friendUsername").value;
+    document.getElementById("friendUsername").value="";
+    var requestData = {
+        username: friendUsername
+    };
+    fetch("/send-friend-request", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            alert("User not found or request already sent")
+        }
+        if (response.ok) {
+            alert("Request sent.")
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("There was a problem with the request:", error);
+    });
+}
+
+function displayFriends() {
+    fetch("/get-friends") 
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch friend list");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            const friendList = document.getElementById("friendList");
+
+            data.friends.forEach(friend => {
+                const listItem = document.createElement("li");
+                listItem.textContent = friend.username; 
+                listItem.addEventListener("click", () => {
+                    window.location.href = `/profile/${friend.id}`;
+                });
+
+                friendList.appendChild(listItem); 
+            });
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+}
+
+
+function displayReceivedRequests() {
+    fetch("/get-received-requests")
+    .then(response => response.json())
+    .then(data => {
+        const receivedRequestsList = document.getElementById("receivedRequestsList");
+        receivedRequestsList.innerHTML = ""; 
+
+        data.request_data.forEach(request => {
+            if (request.sender_username && request.sender_username !== "null" && request.sender_username !== "none") {
+                const listItem = document.createElement("li");
+                const friendName = document.createElement("span");
+                friendName.textContent = request.sender_username;
+
+                const acceptButton = document.createElement("button");
+                acceptButton.textContent = "Accept";
+                acceptButton.addEventListener("click", function() {
+
+                    requestBody = {
+                        sender_username: request.sender_username,
+                        status: "accepted" 
+                    }
+                    fetch("/accept-reject-request", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody) 
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Failed to accept/reject friend request");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.message); 
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                    receivedRequestsList.remove(listItem);
+                    displayReceivedRequests();
+                    displayFriends();
+                });
+
+                const rejectButton = document.createElement("button");
+                rejectButton.textContent = "Reject";
+                rejectButton.addEventListener("click", function() {
+
+                    requestBody = {
+                        sender_username: request.sender_username,
+                        status: "rejected" 
+                    }
+                    fetch("/accept-reject-request", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(requestBody) 
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Failed to accept/reject friend request");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.message); 
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                    receivedRequestsList.remove(listItem);
+                    displayReceivedRequests();
+                });
+
+                listItem.appendChild(friendName);
+                listItem.appendChild(acceptButton);
+                listItem.appendChild(rejectButton);
+
+                receivedRequestsList.appendChild(listItem);
+            }
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching received friend requests:", error);
     });
 }

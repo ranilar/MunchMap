@@ -6,23 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/mapstyles.css">
 </head>
-{% if session.username %}
+
 <body>
-  <div class="menu">
-    <h1>MunchMap</h1>
-    <ul>
-      <li><a href="#">Profile</a></li>
-      <li><a href="#">Friends</a></li>
-      <li><a href="#">Log out</a></li>
-      <li><a href="#">{{session.username}}</a></li>
-    </ul>
-  </div>
-  
-  <div id="map"></div>
+    <div class="menu">
+        <h1>MunchMap</h1>
+        <ul>
+            <li><a href="/profile/{{ session.user_id }}">Profile</a></li>
+            <li><button class="openbtn" onclick="toggleSidebar()">Friends</button></li>
+            <li><a href="/logout">Log out</a></li>
+        </ul>
+    </div>
 
-  <script src="static/script.js"></script>
-  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt3XT8zW1ncpXIQ5QyKNA_lJswobtOgW4&loading=async&libraries=places&map_ids=7d132948a44ae00a&callback=initMap"></script>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <div class="search-box">
+                <h2>Add friend</h2>
+                <input type="search" id="friendUsername" placeholder="Add by username...">
+                <button onclick="addFriend()">Send request</button>
+            </div>
 
+            <div class="received-requests">
+                <h2>Friend Requests</h2>
+                <ul id="receivedRequestsList">
+                </ul>
+            </div>
+            <div class="friend-list">
+                <h2>Friend list:</h2>
+                <ul id="friendList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="static/script.js"></script>
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAt3XT8zW1ncpXIQ5QyKNA_lJswobtOgW4&loading=async&libraries=places&map_ids=7d132948a44ae00a&callback=initMap"></script>
+    <script> displayFriends(); </script>
+    <script> displayReceivedRequests(); </script>
 </body>
-{% endif %}
 </html>

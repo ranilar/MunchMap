@@ -11,7 +11,7 @@ def login(username, password):
         return False
     else:
         if check_password_hash(user.password, password):
-            session["user_id"] = user.id
+            session["user_id"] = user[0]
             session["username"] = username
             return True
         else:
@@ -25,7 +25,7 @@ def register(email, username, password):
         try:
             db.session.execute(sql, {"email":email, "username":username, "password":hash_value})
             db.session.commit()
-        except: 0   
+        except: return    
     except:
         return False
     return login(username, password)

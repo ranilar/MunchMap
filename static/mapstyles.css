@@ -41,9 +41,65 @@ body {
     text-decoration: none;
     color: black;
     font-size: 20px;
+    cursor: pointer;
 }
+.menu ul li a:hover {
+    cursor:pointer;
+}
+
+.menu ul button {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.menu ul button.openbtn {
+    background: none;
+    border: none;
+    color: black; 
+    cursor: pointer;
+    padding: 0;
+    font-size: 20px; 
+}
+
+.menu ul button.openbtn:hover {
+    cursor: pointer;
+}
+
+
+
+.sidebar {
+    position: absolute;
+    top: 0;
+    right: -250px; 
+    width: 250px;
+    height: 100%;
+    background-color: wheat;
+    transition: left 0.6s ease-in; 
+    z-index: 1;
+}
+.sidebar .sidebar-content .search-box,
+.search_box input,
+.sidebar.sidebar-content.received-requests,
+.friend-list,
+.received-requests {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 2px solid black;
+    border-radius: 5px;
+    font-size: 15px; /* Adjust font size as needed */
+    font-weight: 300;
+    padding: 20px 20px 20px 20px; /* Adjust padding values */
+}
+
+
+.sidebar.open {
+    right: 0; 
+}
+
 
 #map {
     height: 70vh;
-    width: 100%; 
+    width: 100%;
+    z-index: 0; 
 }
